@@ -11,16 +11,24 @@ jobs:
     strategy: 
       matrix: 
         os: 
-         # - windows-latest
+          - windows-latest
           - macOS-latest
+        include:
+          - os: windows-latest
+            ext: exe
+          - os: macOS-latest
+            ext: bin
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+        with: 
+          shared-key: "cached-deps"
       - name: Compile
         id: compile
         run: cargo build --release
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Binary
+          name: billiards-${{ matrix.os }}.${{ matrix.ext }}
           path: ./target/release/billiards
