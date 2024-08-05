@@ -1,71 +1,38 @@
-## .github/workflows/build.yml
-#name: Build
-
-#on:
-  #push:
-    #branches: [ "main" ]
-
-#jobs:
-  #build:
-    #name: Build
-    #strategy: 
-      #matrix: 
-        #os: 
-          #- windows-latest
-          #- macOS-latest
-        #include:
-          #- os: windows-latest
-            #ext: exe
-            #buildpath: D:\a\billiards\billiards\target\release\billiards.exe
-            #outputname: billiards-Win.exe
-          #- os: macOS-latest
-            #ext: bin
-            #buildpath: ./target/release/billiards
-            #outputname: billiards-MacOS.bin
-    #runs-on: ${{ matrix.os }}
-    #steps:
-      #- uses: actions/checkout@v4
-      #- uses: Swatinem/rust-cache@v2
-        #with: 
-          #shared-key: "cached-deps"
-      #- name: Compile
-        #id: compile
-        #run: cargo build --release
-      #- name: Upload artifact
-        #uses: actions/upload-artifact@v4
-        #with:
-          #name: ${{ matrix.outputname }}
-          #path: ${{ matrix.buildpath }}
-name: ci
+# .github/workflows/build.yml
+name: Build
 
 on:
   push:
-    branches:
-      - "main"
+    branches: [ "main" ]
 
 jobs:
-  docker:
-    runs-on: ubuntu-latest
+  build:
+    name: Build
+    strategy: 
+      matrix: 
+        os: 
+          - windows-latest
+          - macOS-latest
+        include:
+          - os: windows-latest
+            ext: exe
+            buildpath: D:\a\billiards\billiards\target\release\billiards.exe
+            outputname: billiards-Win.exe
+          - os: macOS-latest
+            ext: bin
+            buildpath: ./target/release/billiards
+            outputname: billiards-MacOS.bin
+    runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+        with: 
+          shared-key: "cached-deps"
+      - name: Compile
+        id: compile
+        run: cargo build --release
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          version: "lab:latest"
-          driver: cloud
-          endpoint: "nolanking90/billiards"
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          tags: "IMAGE"
-          # For pull requests, export results to the build cache.
-          # Otherwise, push to a registry.
-          outputs: ${{ github.event_name == 'pull_request' && 'type=cacheonly' || 'type=registry,push=true' }}
-
+          name: ${{ matrix.outputname }}
+          path: ${{ matrix.buildpath }}
