@@ -5,10 +5,11 @@ edition = "2021"
 
 [dependencies]
 optimization = "*"
-bevy = { version = "0.14", features = ["dynamic_linking"] }
+bevy = { version = "0.14" }
 bevy_prototype_lyon = "0.12"
 bevy_egui = "0.28"
 log = { version = "0.4", features = ["max_level_debug", "release_max_level_warn"] }
+bevy_screen_diagnostics = "*"
 
 [profile.dev]
 opt-level = 1
@@ -20,4 +21,11 @@ opt-level = 3
 codegen-units = 1
 lto = "thin"
 
+[target.x86_64-pc-windows-msvc]
+linker = "/usr/local/bin/lld"
+rustflags = [
+  "-Lnative=/Users/nolanking/.xwin/crt/lib/x86_64",
+  "-Lnative=/Users/nolanking/.xwin/sdk/lib/um/x86_64",
+  "-Lnative=/Users/nolanking/.xwin/sdk/lib/ucrt/x86_64"
+]
 

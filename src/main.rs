@@ -7,6 +7,7 @@ use util::*;
 use bevy::{color::palettes::css::*, prelude::*};
 use bevy_egui::{egui, EguiContexts, EguiPlugin};
 use bevy_prototype_lyon::prelude::*;
+use bevy_screen_diagnostics::{ScreenDiagnosticsPlugin, ScreenFrameDiagnosticsPlugin};
 use std::f64::consts::PI;
 
 #[derive(Component)]
@@ -26,6 +27,8 @@ fn main() {
         .init_resource::<UiState>()
         .add_plugins((DefaultPlugins, ShapePlugin))
         .add_plugins(EguiPlugin)
+        .add_plugins(ScreenDiagnosticsPlugin::default())
+        .add_plugins(ScreenFrameDiagnosticsPlugin)
         .add_systems(Startup, setup)
         .add_systems(Update, update_ui)
         .run();
