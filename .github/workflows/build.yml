@@ -16,8 +16,12 @@ jobs:
         include:
           - os: windows-latest
             ext: exe
+            buildpath: D:\a\billiards\billiards\target\release\billiards.exe
+            outputname: billiards-Win.exe
           - os: macOS-latest
             ext: bin
+            buildpath: ./target/release/billiards
+            outputname: billiards-MacOS.bin
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -30,5 +34,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: billiards-${{ matrix.os }}.${{ matrix.ext }}
-          path: ./target/release/billiards
+          name: ${{ matrix.outputname }}
+          path: ${{ matrix.buildpath }}
